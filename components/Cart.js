@@ -29,8 +29,8 @@ const Cart = ({ navigation, route }) => {
       if (authUser) {
         const docRef = await addDoc(collection(db, "Cart" + authUser.uid), {
           owner_uid: authUser.uid,
-          Name: cart.Name,
-          Price: total,
+          Cart: cart,
+          Total: total,
           Amount: count,
           Buyer: profile,
           Number: number,
@@ -38,7 +38,7 @@ const Cart = ({ navigation, route }) => {
         });
 
         console.log("Document written with ID: ", docRef.id);
-        navigation.navigate("User");
+        navigation.navigate("User", {data: profile});
       } else {
         console.error("User not authenticated");
       }
@@ -200,6 +200,12 @@ const styles = StyleSheet.create({
     marginLeft: 100,
     marginTop: 10,
     paddingVertical: 5
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

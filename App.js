@@ -13,6 +13,9 @@ import Forgot from './components/ForgotPassword';
 import User from './components/User';
 import Cart from './components/Cart';
 import Checkout from './components/Checkout';
+import Admin from './components/Admin';
+import Profile from './components/Profile';
+import demo from './components/demo';
 
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +33,9 @@ export default function App() {
       <Stack.Screen name="User" component={User} />
       <Stack.Screen name="Cart" component={Cart} />
       <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen name="Admin" component={Admin} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="demo" component={demo} />
       </Stack.Navigator> 
     </NavigationContainer>
   );

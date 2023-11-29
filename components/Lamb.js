@@ -1,19 +1,27 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } from "react-native";
 import { addDoc, collection } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "../config/firebase";
 
 const Chicken = ({ navigation, route }) => {
   const { data } = route.params;
-
-  console.log(data)
   const [heart, setHeart] = useState(false);
-
   const [count, setCount] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleHeart = () => {
     setHeart(!heart);
+  };
+
+  const navigateToCart = () => {
+    setIsLoading(true);
+
+    // Simulate some asynchronous task, like fetching data or any other operation
+    setTimeout(() => {
+      setIsLoading(false);
+      navigation.navigate("Cart", { cart: data, count: count, total: parseInt(data.Price) * count });
+    }, 1000); // Adjust the duration as needed
   };
 
 
@@ -21,6 +29,11 @@ const Chicken = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
+            {isLoading && (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#FFF" />
+        </View>
+      )}      
       <View style={styles.nav}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
@@ -74,7 +87,7 @@ const Chicken = ({ navigation, route }) => {
             <TouchableOpacity style={styles.count1} onPress={() => setCount(1)}>
               <Text style={styles.count1}>Reset</Text>
             </TouchableOpacity>
-            <TouchableOpacity   onPress={() => navigation.navigate("Cart" , {cart:data , count: count, total: parseInt(data.Price) *count})}>
+            <TouchableOpacity   onPress={navigateToCart}>
               <Text style={styles.add}>Add Cart</Text>
             </TouchableOpacity>
           </View>
@@ -169,7 +182,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 800,
     marginLeft: 20
-  }
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
 });
 
 export default Chicken;

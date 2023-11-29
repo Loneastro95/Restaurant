@@ -11,6 +11,8 @@ import {
 import { Card } from "react-native-paper";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { AntDesign } from '@expo/vector-icons';
+import { signOut } from "firebase/auth";
 
 const Menu = ({ navigation }) => {
 
@@ -49,7 +51,9 @@ const Menu = ({ navigation }) => {
     fetchSides();
   }, []);
   
-  
+   const handleSignout = () => {
+    signOut(auth)
+   }
 
   return (
     <View style={styles.container}>
@@ -58,6 +62,9 @@ const Menu = ({ navigation }) => {
           source={require("../assets/healthy-organic-tofu-rice-buddha-bowl-with-veggies.jpg")}
           style={styles.backgroundImg}
         >
+                    <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={{width: 60, height: 60, backgroundColor: "#fff", marginLeft: 10, marginTop: 10, alignItems: "center", justifyContent: "center", borderRadius: 40}}>
+                    <AntDesign name="user" size={40} color="black" />
+                    </TouchableOpacity>
           <Text style={styles.menu}>Menu</Text>
         </ImageBackground>
       </View>
@@ -65,6 +72,7 @@ const Menu = ({ navigation }) => {
 
       <ScrollView>
         <View style={styles.main}>
+
           <Text style={styles.text}>Main Category</Text>
           <View style={styles.category}>
             <ScrollView horizontal={true}>
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontStyle: "normal",
     marginLeft: 140,
-    marginTop: 100,
+    marginTop: 60,
   },
   main: {
     marginLeft: 10,
@@ -201,6 +209,12 @@ const styles = StyleSheet.create({
   },
   nav_div: {
     flexDirection: 'row',
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

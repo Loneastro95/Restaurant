@@ -15,17 +15,14 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState(null); // Updated user state to store user information
-
+  const [user, setUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  const handleAuthStateChange = (user) => {
-    setUser(user);
-    if (initializing) setInitializing(false);
   };
 
   useEffect(() => {
@@ -33,25 +30,51 @@ const Login = ({ navigation }) => {
     return () => subscriber(); // unsubscribe on unmount
   }, []);
 
-  const Signin = (() =>{
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up 
+  useEffect(() => {
+    // Trigger form validation when email or password changes
+    validateForm();
+  }, [email, password]);
 
-      alert("Successfully Login")
-      navigation.navigate('Menu')
-      const user = userCredential.user;
-      // ...
-    })
-    .catch((error) => {
-      console.log('error');
-      alert("ERROR!!!")
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-    });
+  const validateForm = () => {
+    let errors = {};
 
-   })
+    // Validate email field
+    if (!email) {
+      errors.email = 'Email is required.';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Email is invalid.';
+    }
+
+    // Validate password field
+    if (!password) {
+      errors.password = 'Password is required.';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters.';
+    }
+
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
+  const handleAuthStateChange = (user) => {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  };
+
+  const handleSignIn = async () => {
+    validateForm(); // Trigger validation before attempting to sign in
+
+    if (isFormValid) {
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Successfully Logged In");
+        navigation.navigate('Menu');
+      } catch (error) {
+        console.error('Error signing in:', error);
+        Alert.alert('Error', 'Invalid credentials. Please try again.');
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -73,7 +96,7 @@ const Login = ({ navigation }) => {
           value={email}
           onChangeText={setEmail}
         />
-        
+         <Text style={{ color: 'red', marginLeft:24,  }}>{errors.email}</Text>
         <View style={styles.inputcontainer}>
           <TextInput
             secureTextEntry={!showPassword}
@@ -91,10 +114,11 @@ const Login = ({ navigation }) => {
             onPress={toggleShowPassword}
           />
         </View>
+        <Text style={{ color: 'red', marginLeft:24,  }}>{errors.password}</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Forgot")} >
         <Text style={styles.forgot}>Forgot password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginBottom: 20}} onPress={Signin}>
+        <TouchableOpacity style={{marginBottom: 20}} onPress={handleSignIn}>
           <Text style={styles.btn}>Log In</Text>
         </TouchableOpacity>
       </View>
@@ -223,6 +247,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 10,
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

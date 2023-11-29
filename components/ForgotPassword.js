@@ -35,6 +35,7 @@ const [showPassword, setShowPassword] = useState(false);
       // ...
     })
     .catch((error) => {
+      alert("error")
       const errorCode = error.code;
       const errorMessage = error.message;
       // ..
