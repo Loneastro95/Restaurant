@@ -151,8 +151,10 @@ const Profile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Text style={styles.text}>Aston</Text>
-        <TouchableOpacity style={styles.button} onPress={() => {}}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Menu")}>
+        <Text style={styles.text}>M</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Menu")}>
           <Text style={styles.btnText}>Log Out</Text>
         </TouchableOpacity>
       </View>
@@ -189,7 +191,7 @@ const Profile = ({ navigation }) => {
                     placeholder="Address"
                     style={styles.input}
                     value={user.address} // Set value to the corresponding state value
-                    onChangeText={(text) => handleInputChange("address", text)}
+                     
                   />
                 </View>
                 <View style={styles.buttons}>
@@ -331,7 +333,10 @@ const styles = {
   button: {
     padding: 10,
     backgroundColor: "#5f9ea0",
-    borderRadius: 5,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    backgroundColor: "#fff"
   },
   btnText: {
     color: "white",

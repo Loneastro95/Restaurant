@@ -8,11 +8,42 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Card } from 'react-native-paper';
-import { addDoc, collection } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDocs, collection, deleteDoc, updateDoc } from "firebase/firestore";
+
 import { db } from "../config/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 const User = ({navigation}) => {
 
+  const [profileInfo, setProfileInfo] = useState([])
+  const handleProfileInfo = async () => {
+    try {
+      const authUser = getAuth().currentUser;
+  
+      if (authUser) {
+        const querySnapshot = await getDocs(collection(db, "test" + authUser.email));
+  
+        const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        setProfileInfo(newData);
+      }
+    } catch (error) {
+      alert('error');
+      console.error("Error fetching profileInfo: ", error);
+    }
+  };
+  
+  useEffect(() => {
+    handleProfileInfo();
+  }, []);
+
+  useEffect(() => {
+    console.log(profileInfo)
+    if (profileInfo && profileInfo.length > 0) {
+      console.log(profileInfo[0].Name);
+    } else {
+      console.log("Profile information not available");
+    } // Log the updated profileInfo
+  }, [profileInfo]);
 
   const d = new Date();
   const x = Math.floor(Math.random() * 9000) + 1000; 
@@ -26,7 +57,7 @@ const User = ({navigation}) => {
       </View>
       <View style={styles.top}>
 
-        <Text style={styles.name}>Hey</Text>
+        <Text style={styles.name}>Hey { profileInfo.length > 0 ? <View>{profileInfo[0].Name}</View>: <View></View>}</Text>
         <Text style={styles.name}>Your Order is Confirmed!</Text>
         <Text style={styles.name}>Ref No. : BB{x}</Text>
         <Text style={styles.name}>Date: {d.getDate()}:{d.getMonth() + 1}:{d.getFullYear()}</Text>

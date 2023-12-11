@@ -153,7 +153,7 @@ const Signup = ({ navigation }) => {
           placeholder="Address..."
           keyboardType="address"
           value={address}
-          onChangeText={setAddress} // Corrected from onChange to onChangeText
+          onChangeText={setAddress} 
         />
 
         <TextInput
